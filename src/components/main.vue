@@ -8,7 +8,7 @@
       <div class="kingDetail">
         <div class="myKing">
           <el-button type="primary">我的国王</el-button>
-          <div id="king">{{ king }}</div>
+          <div id="king">OOO</div>
         </div>
         <div class="kingWish">
           <el-button type="danger">ta的心愿</el-button>
