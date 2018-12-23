@@ -1,10 +1,17 @@
 import Vue from "vue";
 import App from "./App.vue";
 import ElementUI from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
+// import "element-ui/lib/theme-chalk/index.css";
+import "element-ui/lib/theme-chalk/button.css"
+import "element-ui/lib/theme-chalk/input.css"
+import "element-ui/lib/theme-chalk/icon.css"
+import "element-ui/lib/theme-chalk/dialog.css"
+import "element-ui/lib/theme-chalk/message.css"
+import "element-ui/lib/theme-chalk/message.css"
+import "element-ui/lib/theme-chalk/message-box.css"
+
 import router from "./router";
 import axios from "axios";
-import store from "./store.js";
 import mojs from 'mo-js'
 
 
@@ -28,7 +35,6 @@ router.beforeEach((to,from,next)=>{
 new Vue({
   render: h => h(App),
   router,
-  store,
   mojs
 }).$mount("#app");
 
