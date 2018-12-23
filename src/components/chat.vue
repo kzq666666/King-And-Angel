@@ -105,6 +105,14 @@
       },
       socketMessage(e) {
         let data = JSON.parse(e.data);
+        if(data.code==1){
+          this.$message({
+            type:'error',
+            message:'对方不在线，无法接受你的消息',
+            duration:1500,
+            center:true
+          });
+        }
         if (data.from==localStorage.kingUsername) {
           this.kingMessage.push({ msg: data.message, from: "king" });
         }else if(data.from==localStorage.angleUsername){
