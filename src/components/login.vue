@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <!-- <div class="logo"><img src="../assets/logo.png" alt="" /></div> -->
-    <el-form class="loginForm" :rules="rules" :model="loginForm">
+    <el-form class="loginForm"  :model="loginForm">
       <el-form-item>
         <el-input
           class="stuId"
@@ -28,12 +28,6 @@
     data() {
       return {
         sId: null,
-        rules:{
-            ruleStuId: [
-                { required: true, message: '请输入学号', trigger: 'blur' },
-                { min: 5602216022, max: 5602216030, message: '学号仅限16级生工', trigger: 'blur' }
-            ]
-        },
         loginForm:{
             username:null,
             password:null

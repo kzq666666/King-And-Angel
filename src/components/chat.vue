@@ -2,8 +2,14 @@
   <div id="chat">
     <div class="chatHeader">
       <i class="el-icon-arrow-left" @click="back"></i>
-      <div class="chatKing " :class="{chatActive:curObj=='king',online:kingState==0}" @click="chat('king')">国王:{{kingName}}</div>
-      <div class="chatAngle" :class="{chatActive:curObj=='angle',online:angelState==0}" @click="chat('angle')">天使:{{angleName}}</div>
+      <div class="chatKing " :class="{chatActive:curObj=='king',online:kingState==0}" @click="chat('king')">
+        <span>国王</span>
+        <span class="outline" v-if="kingState">（离线）</span>
+      </div>
+      <div class="chatAngle" :class="{chatActive:curObj=='angle',online:angelState==0}" @click="chat('angle')">
+        <span>天使</span>
+        <span class="outline" v-if="angelState">（离线）</span>
+      </div>
     </div>
     <div class="chatBody" v-if="curObj=='king'">
       <div class="message" v-for="(item, index) in kingMessage" :key="index">
@@ -92,7 +98,6 @@
           that.socketSend({type:'ping',username:localStorage.kingUsername});
           that.socketSend({type:'ping',username:localStorage.angleUsername});
           that.socketSend({type:'ping',username:localStorage.myUsername});
-
         },1000)
       },
       socketClose() {
@@ -160,8 +165,6 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    
-   
     background: url(../assets/mainBG.jpg);
     background-size: cover;
   }
@@ -174,7 +177,6 @@
     line-height: 3rem;
     left: 0.5rem;
   }
-
   .chatHeader {
     display: flex;
     text-align: center;
@@ -186,14 +188,14 @@
   }
   .chatKing{
     width: 50%;
-    color: #fff;
+    color: grey;
   }
   .chatAngle{
     width: 50%;
-    color: #fff;
+    color: grey;
   }
   .online{
-    color: #f44336;
+    color: #67c23a;
   }
   .chatActive{
     border-bottom:2px solid #f44336; 
@@ -228,7 +230,6 @@
   .others {
     /* position: absolute; */
     display: flex;
-
     align-items: center;
   }
   .self {
@@ -294,4 +295,5 @@
     font-size: 1rem;
     border-radius: 0.5rem;
   }
+  
 </style>
