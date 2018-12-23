@@ -29,7 +29,7 @@
       <div class="angleDetail">
         <div class="myAngle">
           <el-button type="primary">我的小天使</el-button>
-          <div id="angle">{{ angle }}</div>
+          <div id="angle">XXX</div>
         </div>
         <div class="angleWish">
           <el-button type="danger">我的心愿</el-button>
@@ -48,6 +48,7 @@
       :visible.sync="dialogVisible"
       width="80%"
       top="50%"
+      class="myDialog"
     >
       <el-input
         type="textarea"
@@ -62,10 +63,11 @@
       </span>
     </el-dialog>
     <el-dialog
-      :title="'来自'+angle+'的祝福'"
+      title="来自你的小天使的祝福"
       :visible.sync="showRecWish"
       width="80%"
       top="50%"
+      class="mydialog"
     >
       <div id="recWish">{{ angleBless }}</div>
       <span slot="footer" class="dialog-footer">
@@ -224,18 +226,16 @@
     font-size: 1.5rem;
     vertical-align: text-top;
   }
-  #hisWish,
-  #myWish {
-    width: 50%;
-    text-align: center;
-    margin: 0 auto;
+  #hisWish,.myWish{
+    color: #ffcdd2;
+    font-weight: bold;
+    font-size: 1.2rem;
   }
   .avator {
     display: inline-block;
     width: 9rem;
     height: 9rem;
     border-radius: 50%;
-    border: 1px solid black;
     margin: 2rem 0;
   }
 
@@ -286,11 +286,17 @@
     color: brown;
   }
   .king .avator {
-    background: url(../assets/kzqAvator.jpg);
+    background: url(../assets/king.png);
     background-size: cover;
   }
   .angle .avator {
-    background: url(../assets/brotherAvator.jpg);
+    background: url(../assets/angel.png);
     background-size: contain;
+  }
+  .main .el-dialog{
+    background:salmon;
+  }
+  .main .el-dialog textarea{
+    opacity: 0.7;
   }
 </style>

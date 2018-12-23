@@ -12,7 +12,6 @@
         >写好了</el-button
       >
     </div>
-    <!-- <div class="logo"><img src="../assets/logo.png" alt="" /></div> -->
   </div>
 </template>
 
@@ -25,25 +24,29 @@
     },
     methods: {
       go_main() {
-        this.$http
-          .post(localStorage.url + "/api/king-and-angle/wish", {
-            wish: this.wish
-          })
-          .then(res => {
-            if (res.data.code == 0) {
-              localStorage.wish = this.wish;
-              if(!localStorage.wish){
-                  this.$message({
-                      type:'warning',
-                      center:true,
-                      message:'请写下你的小愿望'
-                  })
-              }else{
-                  this.$router.push('/')
-              }
-            }
+        if (!this.wish) {
+          this.$message({
+            type: "warning",
+            center: true,
+            message: "请写下你的小愿望"
           });
-        
+        } else {
+          this.$confirm("填写愿望之后就不能更改了哦，是否继续？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+            center: true
+          }).then(() => {
+            this.$http
+              .post(localStorage.url + "/api/king-and-angle/wish", {
+                wish: this.wish
+              })
+              .then(res => {
+                localStorage.wish = this.wish;
+                this.$router.push("/");
+              });
+          });
+        }
       }
     },
     created() {
@@ -63,8 +66,8 @@
     background: url(../assets/wishBG.jpg);
     background-size: cover;
   }
-  .writeWish{
-      text-align: center;
+  .writeWish {
+    text-align: center;
   }
   .writeWish textarea {
     resize: none;
@@ -80,5 +83,8 @@
   .writeWish .start_button {
     font-size: 1.2rem;
     margin-top: 3.5rem;
+  }
+  .el-message-box{
+    width: 85%;
   }
 </style>
