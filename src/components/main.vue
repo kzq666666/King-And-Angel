@@ -188,6 +188,11 @@
             this.isFinished = res.data.wish_status==1?true:false;
           }
         )
+    },
+    mounted () {
+      if(!localStorage.token){
+        this.$router.push('/login');
+      }
     }
   };
 </script>
