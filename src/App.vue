@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @load="loading">
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
@@ -10,6 +10,11 @@
 <script>
   export default {
     name: "app",
+    methods: {
+      loading(){
+        console.log("loading")
+      }
+    },
     created() {
       const OPTIONS = {
         shape: "circle",
@@ -91,5 +96,11 @@
   }
   #app {
     position: relative;
+  }
+  canvas{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate3d(-50%,-50%,0);
   }
 </style>

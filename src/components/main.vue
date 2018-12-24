@@ -3,7 +3,6 @@
     <div class="king" :class="{overTurn:isTurn}">
       <i class="el-icon-refresh" @click="turn"></i>
       <img src="../assets/exit.png" alt="退出" class="exit" @click="exit"/>
-      <!-- <span>溜 </span> -->
       <div class="avator"></div>
       <div class="kingDetail">
         <div class="myKing">
@@ -11,7 +10,9 @@
           <div id="king">OOO</div>
         </div>
         <div class="kingWish">
-          <el-button type="danger">ta的心愿</el-button>
+          <el-button type="danger">ta的心愿
+            <i :class="{'el-icon-error':hisFinished==false,'el-icon-success':hisFinished==true}"></i>
+          </el-button>
           <div id="hisWish">{{ kingWish }}</div>
         </div>
       </div>
@@ -32,8 +33,11 @@
           <div id="angle">XXX</div>
         </div>
         <div class="angleWish">
-          <el-button type="danger">我的心愿</el-button>
+          <el-button type="danger" @click="changeWishState">我的心愿
+              <i :class="{'el-icon-error':isFinished==false,'el-icon-success':isFinished==true}"></i>
+          </el-button>
           <div class="myWish">{{ myWish }}</div>
+          
         </div>
       </div>
       <div class="mainButton">
@@ -91,7 +95,9 @@
         angleUsername: "",
         myWish: "",
         angleBless: "",
-        blessing: ""
+        blessing: "",
+        isFinished:false,
+        hisFinished:false
       };
     },
     methods: {
@@ -122,6 +128,20 @@
               });
             }
           });
+      },
+      changeWishState(){
+        this.$http.post(localStorage.url+'/api/king-and-angle/wish_status',{"wish_status":Number(!this.wish_status)},{headers:{"Authorization":localStorage.token}}).then(
+          (res)=>{
+            if(res.data.code == 0){
+              this.isFinished = !this.isFinished;
+              if(this.isFinished){
+                this.$message.success('你的愿望被实现了(￣▽￣)！')
+              }else{
+                this.$message.error('你的愿望还没实现呢(￣、￣)')
+              }
+            }
+          }
+        )
       }
     },
     created() {
@@ -139,6 +159,7 @@
             this.kingUsername = res.data.data.king_username;
             localStorage.kingName = this.king;
             localStorage.kingUsername = this.kingUsername;
+            this.hisFinished = res.data.king_wish_status==1?true:false;
           } else if (res.data.message == "授权已过期") {
             localStorage.clear();
             this.$router.push("/");
@@ -160,6 +181,13 @@
             this.$router.push("/");
           }
         });
+        this.$http.get(localStorage.url + "/api/king-and-angle/wish",{
+          headers: { Authorization: localStorage.token }
+        }).then(
+          res=>{
+            this.isFinished = res.data.wish_status==1?true:false;
+          }
+        )
     }
   };
 </script>
@@ -227,9 +255,10 @@
     vertical-align: text-top;
   }
   #hisWish,.myWish{
-    color: #ffcdd2;
+    color: #ffeb3b;
     font-weight: bold;
     font-size: 1.2rem;
+    margin-top: 0.5rem;
   }
   .avator {
     display: inline-block;
@@ -299,4 +328,14 @@
   .main .el-dialog textarea{
     opacity: 0.7;
   }
+  /* .el-checkbox{
+    margin-top: 1rem;
+  }
+  .el-checkbox__inner{
+    width: 1rem;
+    height: 1rem;;
+  }
+  .el-checkbox__label {
+    font-size: 1.2rem;
+  } */
 </style>

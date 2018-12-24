@@ -5,9 +5,11 @@ import writeWish from '../components/writeWish'
 import main from '../components/main'
 import chat from '../components/chat'
 import notFound from '../components/404'
+import changePWD from '../components/changePWD'
 
 Vue.use(VueRouter)
 const router = new VueRouter({
+    mode:'history',
     routes:[
         {
             path:'/',
@@ -23,6 +25,11 @@ const router = new VueRouter({
             meta:{
                 keepAlive:false
             }
+        },
+        {
+            path: '/changePWD',
+            component:changePWD,
+            name:'changePWD'
         },
         {
             path:'/writeWish',

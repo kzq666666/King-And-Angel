@@ -1,6 +1,5 @@
 <template>
   <div class="login">
-    <!-- <div class="logo"><img src="../assets/logo.png" alt="" /></div> -->
     <el-form class="loginForm"  :model="loginForm">
       <el-form-item>
         <el-input
@@ -36,19 +35,25 @@
     },
     methods: {
       login(){
+        // this.$router.push({
+        //   name:'changePWD'
+        // })
         this.$http.post(localStorage.url+'/api/user/token',this.loginForm).then(
           (res)=>{
             if(res.data.code == 0){
               localStorage.myUsername = this.loginForm.username;
               localStorage.wish = res.data.wish;
               localStorage.token = res.data.token;
+              localStorage.isInitial = res.data.isInitial;
               this.$message({
                 type:'success',
                 message:'登录成功，欢迎来到国王与天使的活动',
                 center:true,
                 duration:1500
               })
-              if(!localStorage.wish){
+              if(localStorage.isInitial == 'true'){
+                this.$router.push('/changePWD');
+              }else if(localStorage.isInitial == 'false' && !localStorage.wish){
                 this.$router.push('/writeWish'); 
               }else{
                 this.$router.push('/')
