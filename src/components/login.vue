@@ -12,7 +12,7 @@
         <el-input
           id="password"
           type="password"
-          placeholder="密码（和学号相同）"
+          placeholder="密码（初始密码和学号相同）"
           v-model="loginForm.password"
           @keydown.enter.native="login"
         ></el-input>

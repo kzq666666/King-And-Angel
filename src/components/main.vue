@@ -10,7 +10,7 @@
           <div id="king">King</div>
         </div>
         <div class="kingWish">
-          <el-button type="danger">ta的心愿
+          <el-button type="danger">TA的心愿
             <i :class="{'el-icon-error':hisFinished==false,'el-icon-success':hisFinished==true}"></i>
           </el-button>
           <div id="hisWish">{{ kingWish }}</div>
@@ -97,9 +97,7 @@
         angleBless: "",
         blessing: "",
         isFinished:false,
-        hisFinished:false,
-        kingArray:[],
-        angelArray:[]
+        hisFinished:false
       };
     },
     methods: {
@@ -147,6 +145,9 @@
       }
     },
     created() {
+      if(!localStorage.token){
+        this.$router.push('/login');
+      }
       localStorage.url = "https://king-api.ncu204.com";
       this.$http
         .get(localStorage.url + "/api/king-and-angle/king", {
@@ -157,7 +158,7 @@
             this.king = res.data.data.king;
             this.kingWish = res.data.data.king_wish
               ? res.data.data.king_wish
-              : "ta暂时还没填写";
+              : "TA暂时还没填写";
             this.kingUsername = res.data.data.king_username;
             localStorage.kingName = this.king;
             localStorage.kingUsername = this.kingUsername;
