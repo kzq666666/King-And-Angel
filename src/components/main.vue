@@ -7,7 +7,7 @@
       <div class="kingDetail">
         <div class="myKing">
           <el-button type="primary">我的国王</el-button>
-          <div id="king">OOO</div>
+          <div id="king">King</div>
         </div>
         <div class="kingWish">
           <el-button type="danger">ta的心愿
@@ -30,7 +30,7 @@
       <div class="angleDetail">
         <div class="myAngle">
           <el-button type="primary">我的小天使</el-button>
-          <div id="angle">XXX</div>
+          <div id="angle">Angel</div>
         </div>
         <div class="angleWish">
           <el-button type="danger" @click="changeWishState">我的心愿
@@ -79,7 +79,6 @@
         <el-button type="primary" @click="showRecWish = false">确 定</el-button>
       </span>
     </el-dialog>
-    <div class="egg">K</div>
   </div>
 </template>
 <script>
@@ -98,7 +97,9 @@
         angleBless: "",
         blessing: "",
         isFinished:false,
-        hisFinished:false
+        hisFinished:false,
+        kingArray:[],
+        angelArray:[]
       };
     },
     methods: {
@@ -156,7 +157,7 @@
             this.king = res.data.data.king;
             this.kingWish = res.data.data.king_wish
               ? res.data.data.king_wish
-              : "暂无";
+              : "ta暂时还没填写";
             this.kingUsername = res.data.data.king_username;
             localStorage.kingName = this.king;
             localStorage.kingUsername = this.kingUsername;
