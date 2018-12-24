@@ -79,6 +79,7 @@
         <el-button type="primary" @click="showRecWish = false">确 定</el-button>
       </span>
     </el-dialog>
+    <div class="egg">K</div>
   </div>
 </template>
 <script>
