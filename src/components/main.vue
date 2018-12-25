@@ -13,14 +13,14 @@
           <el-button type="danger">TA的心愿
             <i :class="{'el-icon-error':hisFinished==false,'el-icon-success':hisFinished==true}"></i>
           </el-button>
-          <div id="hisWish">{{ kingWish }}</div>
+          <div class="hisWish">{{ kingWish }}</div>
         </div>
       </div>
       <div class="mainButton">
         <el-button type="danger" class="dailyTask" @click="dialogVisible=true"
           >圣诞祝福</el-button
         >
-        <el-button type="primary" @click="goChat('king')">聊聊</el-button>
+        <el-button type="primary" @click="goChat('king')">聊一聊</el-button>
       </div>
     </div>
     <div class="angle" :class="{overTurn:!isTurn}">
@@ -44,7 +44,7 @@
         <el-button type="danger" class="dailyTask" @click="showRecWish=true"
           >收到的祝福</el-button
         >
-        <el-button type="primary" @click="goChat('angle')">聊聊</el-button>
+        <el-button type="primary" @click="goChat('angle')">聊一聊</el-button>
       </div>
     </div>
     <el-dialog
@@ -217,8 +217,8 @@
   .king,
   .angle {
     position: absolute;
-    top: 3rem;
-    bottom: 3rem;
+    top: 1.2rem;
+    bottom: 1.2rem;
     left: 1.5rem;
     right: 1.5rem;
     box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.24);
@@ -262,7 +262,8 @@
     font-size: 1.5rem;
     vertical-align: text-top;
   }
-  #hisWish,.myWish{
+  .hisWish,.myWish{
+    width: 100%;
     color: #ffeb3b;
     font-weight: bold;
     font-size: 1.2rem;

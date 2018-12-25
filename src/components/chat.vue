@@ -13,26 +13,31 @@
     </div>
     <div class="chatBody" v-if="curObj=='king'">
       <div class="message" v-for="(item, index) in kingMessage" :key="index">
-        <div class="self" v-if="item.name == 'self'">
+        <div class="self" v-if="item.from == 'self'">
+          <div class="time">{{item.time}}</div>
           <div class="chatBubble">{{ item.msg }}</div>
           <div class="triangle"></div>
           <div class="selfAvtor angelAvator"></div>
         </div>
         <div class="others" v-else>
+          
           <div class="selfAvtor kingAvator"></div>
           <div class="triangle"></div>
           <div class="chatBubble">{{ item.msg }}</div>
+          <div class="time">{{item.time}}</div>
         </div>
       </div>
     </div>
     <div class="chatBody" v-if="curObj=='angle'">
         <div class="message" v-for="(item, index) in angleMessage" :key="index">
-          <div class="self" v-if="item.name == 'self'">
+          <div class="self" v-if="item.from == 'self'">
+            <div class="time">{{item.time}}</div>
             <div class="chatBubble">{{ item.msg }}</div>
             <div class="triangle"></div>
             <div class="selfAvtor kingAvator"></div>
           </div>
           <div class="others" v-else>
+            <div class="time">{{item.time}}</div>
             <div class="selfAvtor angelAvator"></div>
             <div class="triangle"></div>
             <div class="chatBubble">{{ item.msg }}</div>
@@ -69,9 +74,12 @@
         msg: {
           from: "",
           to: "",
-          message: ""
+          message: "",
+          send_time:null
         },
         reg: /^\s*\s*$/g,
+        kingCurTime:null,
+        angelCurTime:null
         // chatAvtor:'url'
       };
     },
@@ -84,11 +92,11 @@
       },
       initWebsocket() {
         this.socket = new WebSocket("wss://king-api.ncu204.com/ws");
+        // this.socket = new WebSocket("ws://192.168.1.105:8003/ws")
         this.socket.onopen = this.socketOpen;
         this.socket.onclose = this.socketClose;
         this.socket.onmessage = this.socketMessage;
         this.authortaion.token = localStorage.token;
-        
       },
       socketOpen() {
         this.socketSend(this.authortaion);
@@ -114,9 +122,43 @@
           });
         }
         if (data.from==localStorage.kingUsername) {
-          this.kingMessage.push({ msg: data.message, from: "king" });
+          if(data.send_time){
+            let time = new Date(data.send_time*1000);
+            let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
+            let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
+            this.kingMessage.push({ msg: data.message, from: "king",time:curDateTime });
+          }else{
+            this.kingMessage.push({ msg: data.message, from: "king"});
+          }
+          // this.kingMessage.push({ msg: data.message, from: "king" });
         }else if(data.from==localStorage.angleUsername){
-          this.angleMessage.push({ msg:data.message,from:"angle"})
+          
+          if(data.send_time){
+            let time = new Date(data.send_time*1000);
+            let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
+            let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
+            this.angleMessage.push({ msg: data.message, from: "angle",time:curDateTime });
+          }else{
+            this.angleMessage.push({ msg:data.message,from:"angle"})
+          }
+        }else if(data.from == localStorage.myUsername && data.to == localStorage.kingUsername){
+          if(data.send_time){
+            let time = new Date(data.send_time*1000);
+            let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
+            let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
+            this.kingMessage.push({ msg: data.message, from: "self",time:curDateTime });
+          }else{
+            this.kingMessage.push({ msg:data.message,from:"self"})
+          }
+        }else if(data.from == localStorage.myUsername && data.to == localStorage.angleUsername){
+          if(data.send_time){
+            let time = new Date(data.send_time*1000);
+            let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
+            let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
+            this.angleMessage.push({ msg: data.message, from: "self",time:curDateTime });
+          }else{
+            this.angleMessage.push({ msg:data.message,from:"self"})
+          }
         }
         if(data.username==localStorage.kingUsername){
           
@@ -139,10 +181,30 @@
         } else {
           if(this.curObj=="king"){
             this.msg.to = localStorage.kingUsername;
-            this.kingMessage.push({ msg: this.msg.message, name: "self" });
+            let time = new Date();
+            if(!this.kingCurTime || time.getTime()-this.kingCurTime.getTime()>60000){
+              this.kingCurTime = time;
+              let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
+              let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
+              this.msg.send_time = parseInt(time.getTime()/1000)
+              this.kingMessage.push({ msg: this.msg.message, from: "self",time: curDateTime});
+            }else{
+              this.msg.send_time = Number(0);
+              this.kingMessage.push({ msg: this.msg.message, from: "self"});
+            }
           }else if(this.curObj=="angle"){
             this.msg.to = localStorage.angleUsername;
-            this.angleMessage.push({ msg: this.msg.message, name: "self" });
+            let time = new Date();
+            if(!this.angelCurTime || time.getTime()-this.angelCurTime.getTime()>60000){
+              this.angelCurTime = time;
+              let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
+              let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
+              this.msg.send_time = parseInt(time.getTime()/1000)
+              this.angleMessage.push({ msg: this.msg.message, from: "self",time: curDateTime});
+            }else{
+              this.msg.send_time = Number(0);
+              this.angleMessage.push({ msg: this.msg.message, from: "self"});
+            }
           }
           this.socketSend(this.msg);
           this.msg.message = null;
@@ -231,8 +293,8 @@
   }
   .time {
     text-align: center;
-    margin-bottom: 0.3rem;
-    color: #99999999;
+    margin: 0 0.3rem 0.3rem 0;
+    color: #9e9e9e;
   }
   .self,
   .others {
