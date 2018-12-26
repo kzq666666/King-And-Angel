@@ -164,7 +164,8 @@
             this.kingUsername = res.data.data.king_username;
             localStorage.kingName = this.king;
             localStorage.kingUsername = this.kingUsername;
-            this.hisFinished = res.data.king_wish_status==1?true:false;
+            this.hisFinished = res.data.data.king_wish_status==1?true:false;
+
           } else if (res.data.message == "授权已过期") {
             localStorage.clear();
             this.$router.push("/");
@@ -190,7 +191,6 @@
           headers: { Authorization: localStorage.token }
         }).then(
           res=>{
-            console.log(res);
             
             this.isFinished = res.data.wish_status==1?true:false;
             console.log(this.isFinished);
