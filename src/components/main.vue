@@ -96,8 +96,8 @@
         myWish: "",
         angleBless: "",
         blessing: "",
-        isFinished:false,
-        hisFinished:false
+        isFinished:null,
+        hisFinished:null
       };
     },
     methods: {
@@ -130,10 +130,12 @@
           });
       },
       changeWishState(){
-        this.$http.post(localStorage.url+'/api/king-and-angle/wish_status',{"wish_status":Number(!this.wish_status)},{headers:{"Authorization":localStorage.token}}).then(
+        let op = !this.isFinished;
+        this.$http.post(localStorage.url+'/api/king-and-angle/wish_status',{"wish_status":Number(op)},{headers:{"Authorization":localStorage.token}}).then(
           (res)=>{
             if(res.data.code == 0){
               this.isFinished = !this.isFinished;
+
               if(this.isFinished){
                 this.$message.success('你的愿望被实现了(￣▽￣)！')
               }else{
@@ -188,7 +190,10 @@
           headers: { Authorization: localStorage.token }
         }).then(
           res=>{
+            console.log(res);
+            
             this.isFinished = res.data.wish_status==1?true:false;
+            console.log(this.isFinished);
           }
         )
     },
