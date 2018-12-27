@@ -37,9 +37,8 @@ router.beforeEach((to, from, next) => {
 new Vue({
   render: h => h(App),
   router,
-  mojs
+  mojs,
 }).$mount("#app");
-
 axios.interceptors.request.use(config => {
   if (!config.headers.Authorization) {
     config.headers.Authorization = localStorage.token;

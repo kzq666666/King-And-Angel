@@ -9,7 +9,6 @@ import changePWD from '../components/changePWD'
 
 Vue.use(VueRouter)
 const router = new VueRouter({
-    mode:'history',
     routes:[
         {
             path:'/',

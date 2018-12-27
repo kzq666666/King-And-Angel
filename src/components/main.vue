@@ -2,16 +2,19 @@
   <div class="main">
     <div class="king" :class="{overTurn:isTurn}">
       <i class="el-icon-refresh" @click="turn"></i>
-      <img src="../assets/exit.png" alt="退出" class="exit" @click="exit"/>
+      <img src="../assets/exit.png" alt="退出" class="exit" @click="exit" />
       <div class="avator"></div>
       <div class="kingDetail">
         <div class="myKing">
           <el-button type="primary">我的国王</el-button>
-          <div id="king">King</div>
+          <div id="king"></div>
         </div>
         <div class="kingWish">
-          <el-button type="danger">TA的心愿
-            <i :class="{'el-icon-error':hisFinished==false,'el-icon-success':hisFinished==true}"></i>
+          <el-button type="danger"
+            >TA的心愿
+            <i
+              :class="{'el-icon-error':hisFinished==false,'el-icon-success':hisFinished==true}"
+            ></i>
           </el-button>
           <div class="hisWish">{{ kingWish }}</div>
         </div>
@@ -23,28 +26,30 @@
         <el-button type="primary" @click="goChat('king')">聊一聊</el-button>
       </div>
     </div>
-    <div class="angle" :class="{overTurn:!isTurn}">
+    <div class="angel" :class="{overTurn:!isTurn}">
       <i class="el-icon-refresh" @click="turn"></i>
-      <img src="../assets/exit.png" alt="退出" class="exit" @click="exit"/>
+      <img src="../assets/exit.png" alt="退出" class="exit" @click="exit" />
       <div class="avator"></div>
-      <div class="angleDetail">
-        <div class="myAngle">
+      <div class="angelDetail">
+        <div class="myangel">
           <el-button type="primary">我的小天使</el-button>
-          <div id="angle">Angel</div>
+          <div id="angel"></div>
         </div>
-        <div class="angleWish">
-          <el-button type="danger" @click="changeWishState">我的心愿
-              <i :class="{'el-icon-error':isFinished==false,'el-icon-success':isFinished==true}"></i>
+        <div class="angelWish">
+          <el-button type="danger" @click="changeWishState"
+            >我的心愿
+            <i
+              :class="{'el-icon-error':isFinished==false,'el-icon-success':isFinished==true}"
+            ></i>
           </el-button>
           <div class="myWish">{{ myWish }}</div>
-          
         </div>
       </div>
       <div class="mainButton">
         <el-button type="danger" class="dailyTask" @click="showRecWish=true"
           >收到的祝福</el-button
         >
-        <el-button type="primary" @click="goChat('angle')">聊一聊</el-button>
+        <el-button type="primary" @click="goChat('angel')">聊一聊</el-button>
       </div>
     </div>
     <el-dialog
@@ -73,7 +78,7 @@
       top="50%"
       class="mydialog"
     >
-      <div id="recWish">{{ angleBless }}</div>
+      <div id="recWish">{{ angelBless }}</div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="showRecWish = false">取 消</el-button>
         <el-button type="primary" @click="showRecWish = false">确 定</el-button>
@@ -82,6 +87,7 @@
   </div>
 </template>
 <script>
+  import { Lottery } from "../Lottery.js";
   export default {
     data() {
       return {
@@ -91,13 +97,15 @@
         king: "",
         kingUsername: "",
         kingWish: "",
-        angle: "",
-        angleUsername: "",
+        angel: "",
+        angelUsername: "",
         myWish: "",
-        angleBless: "",
+        angelBless: "",
         blessing: "",
-        isFinished:null,
-        hisFinished:null
+        isFinished: null,
+        hisFinished: null,
+        kingLottery: null,
+        angelLottery: null
       };
     },
     methods: {
@@ -105,9 +113,9 @@
         this.myWish = localStorage.wish;
         this.isTurn = !this.isTurn;
       },
-      exit(){
+      exit() {
         localStorage.clear();
-        this.$router.push('/login')
+        this.$router.push("/login");
       },
       goChat(obj) {
         localStorage.chatType = obj;
@@ -129,27 +137,32 @@
             }
           });
       },
-      changeWishState(){
+      changeWishState() {
         let op = !this.isFinished;
-        this.$http.post(localStorage.url+'/api/king-and-angle/wish_status',{"wish_status":Number(op)},{headers:{"Authorization":localStorage.token}}).then(
-          (res)=>{
-            if(res.data.code == 0){
+        this.$http
+          .post(
+            localStorage.url + "/api/king-and-angle/wish_status",
+            { wish_status: Number(op) },
+            { headers: { Authorization: localStorage.token } }
+          )
+          .then(res => {
+            if (res.data.code == 0) {
               this.isFinished = !this.isFinished;
 
-              if(this.isFinished){
-                this.$message.success('你的愿望被实现了(￣▽￣)！')
-              }else{
-                this.$message.error('你的愿望还没实现呢(￣、￣)')
+              if (this.isFinished) {
+                this.$message.success("你的愿望被实现了(￣▽￣)！");
+              } else {
+                this.$message.error("你的愿望还没实现呢(￣、￣)");
               }
             }
-          }
-        )
+          });
+      },
+      returnData(data) {
+        return this.data;
       }
     },
-    created() {
-      if(!localStorage.token){
-        this.$router.push('/login');
-      }
+    created() {},
+    mounted() {
       localStorage.url = "https://king-api.ncu204.com";
       this.$http
         .get(localStorage.url + "/api/king-and-angle/king", {
@@ -164,8 +177,17 @@
             this.kingUsername = res.data.data.king_username;
             localStorage.kingName = this.king;
             localStorage.kingUsername = this.kingUsername;
-            this.hisFinished = res.data.data.king_wish_status==1?true:false;
-
+            this.kingLottery = new Lottery(
+              "king",
+              "#CCC",
+              "color",
+              120,
+              30,
+              "#b94747"
+            );
+            this.kingLottery.init(localStorage.kingName, "text");
+            this.hisFinished =
+              res.data.data.king_wish_status == 1 ? true : false;
           } else if (res.data.message == "授权已过期") {
             localStorage.clear();
             this.$router.push("/");
@@ -177,29 +199,36 @@
         })
         .then(res => {
           if (res.data.code == 0) {
-            this.angle = res.data.data.angle_name;
-            this.angleBless = res.data.data.angle_blessing;
-            this.angleUsername = res.data.data.angle_username;
-            localStorage.angleName = this.angle;
-            localStorage.angleUsername = this.angleUsername;
+            this.angel = res.data.data.angle_name;
+            this.angelBless = res.data.data.angle_blessing;
+            this.angelUsername = res.data.data.angle_username;
+            localStorage.angelName = this.angel;
+            localStorage.angelUsername = this.angelUsername;
+            this.angelLottery = new Lottery(
+              "angel",
+              "#CCC",
+              "color",
+              120,
+              30,
+              "#16427f"
+            );
+
+            this.angelLottery.init(localStorage.angelName, "text");
           } else if (res.data.message == "授权已过期") {
             localStorage.clear();
             this.$router.push("/");
           }
         });
-        this.$http.get(localStorage.url + "/api/king-and-angle/wish",{
+      this.$http
+        .get(localStorage.url + "/api/king-and-angle/wish", {
           headers: { Authorization: localStorage.token }
-        }).then(
-          res=>{
-            
-            this.isFinished = res.data.wish_status==1?true:false;
-            console.log(this.isFinished);
-          }
-        )
-    },
-    mounted () {
-      if(!localStorage.token){
-        this.$router.push('/login');
+        })
+        .then(res => {
+          this.isFinished = res.data.wish_status == 1 ? true : false;
+        });
+
+      if (!localStorage.token) {
+        this.$router.push("/login");
       }
     }
   };
@@ -212,6 +241,7 @@
     box-sizing: border-box;
     background: url(../assets/mainBG.jpg);
     background-size: contain;
+    overflow: hidden;
   }
   .exit {
     position: absolute;
@@ -220,7 +250,7 @@
     top: 1rem;
   }
   .king,
-  .angle {
+  .angel {
     position: absolute;
     top: 1.2rem;
     bottom: 1.2rem;
@@ -233,8 +263,8 @@
     background: url(../assets/kingBG.jpg);
     background-size: cover;
   }
-  .angle {
-    background: url(../assets/angleBG.jpg);
+  .angel {
+    background: url(../assets/angelBG.jpg);
     background-size: cover;
   }
   .el-icon-refresh {
@@ -245,15 +275,15 @@
   }
 
   .kingDetail,
-  .angleDetail {
+  .angelDetail {
     width: 100%;
     font-size: 1.1rem;
     text-align: center;
   }
   .myKing button,
   .kingWish button,
-  .myAngle button,
-  .angleWish button {
+  .myangel button,
+  .angelWish button {
     width: 40%;
     font-size: 1.1rem;
     padding: 0;
@@ -262,12 +292,14 @@
     margin-bottom: 1rem;
   }
   #king,
-  #angle {
-    font-weight: bold;
-    font-size: 1.5rem;
-    vertical-align: text-top;
+  #angel {
+    position: relative;
+    width: 120px;
+    height: 50px;
+    margin: 0 auto;
   }
-  .hisWish,.myWish{
+  .hisWish,
+  .myWish {
     width: 100%;
     color: #ffeb3b;
     font-weight: bold;
@@ -282,10 +314,6 @@
     margin: 2rem 0;
   }
 
-  .myKing,
-  .myAngle {
-    margin-bottom: 1rem;
-  }
   .is-light {
     width: 30%;
   }
@@ -303,7 +331,7 @@
   .dailyTask {
     margin-right: 2rem;
   }
-  .showAngle {
+  .showangel {
     height: 1.5rem;
     width: 2.6rem;
     padding: 0;
@@ -332,24 +360,14 @@
     background: url(../assets/king.png);
     background-size: cover;
   }
-  .angle .avator {
+  .angel .avator {
     background: url(../assets/angel.png);
     background-size: contain;
   }
-  .main .el-dialog{
-    background:salmon;
+  .main .el-dialog {
+    background: salmon;
   }
-  .main .el-dialog textarea{
+  .main .el-dialog textarea {
     opacity: 0.7;
   }
-  /* .el-checkbox{
-    margin-top: 1rem;
-  }
-  .el-checkbox__inner{
-    width: 1rem;
-    height: 1rem;;
-  }
-  .el-checkbox__label {
-    font-size: 1.2rem;
-  } */
 </style>

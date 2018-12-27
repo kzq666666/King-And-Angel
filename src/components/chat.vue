@@ -6,7 +6,7 @@
         <span>国王</span>
         <span class="outline" v-if="kingState">（离线）</span>
       </div>
-      <div class="chatAngle" :class="{chatActive:curObj=='angle',online:angelState==0}" @click="chat('angle')">
+      <div class="chatAngel" :class="{chatActive:curObj=='angel',online:angelState==0}" @click="chat('angel')">
         <span>天使</span>
         <span class="outline" v-if="angelState">（离线）</span>
       </div>
@@ -16,30 +16,30 @@
         <div class="self" v-if="item.from == 'self'">
           <div class="time">{{item.time}}</div>
           <div class="chatBubble">{{ item.msg }}</div>
-          <div class="triangle"></div>
+          <div class="temp"></div>
           <div class="selfAvtor angelAvator"></div>
         </div>
         <div class="others" v-else>
           
           <div class="selfAvtor kingAvator"></div>
-          <div class="triangle"></div>
+          <div class="temp"></div>
           <div class="chatBubble">{{ item.msg }}</div>
           <div class="time">{{item.time}}</div>
         </div>
       </div>
     </div>
-    <div class="chatBody" v-if="curObj=='angle'">
-        <div class="message" v-for="(item, index) in angleMessage" :key="index">
+    <div class="chatBody" v-if="curObj=='angel'">
+        <div class="message" v-for="(item, index) in angelMessage" :key="index">
           <div class="self" v-if="item.from == 'self'">
             <div class="time">{{item.time}}</div>
             <div class="chatBubble">{{ item.msg }}</div>
-            <div class="triangle"></div>
+            <div class="temp"></div>
             <div class="selfAvtor kingAvator"></div>
           </div>
           <div class="others" v-else>
             <div class="time">{{item.time}}</div>
             <div class="selfAvtor angelAvator"></div>
-            <div class="triangle"></div>
+            <div class="temp"></div>
             <div class="chatBubble">{{ item.msg }}</div>
           </div>
         </div>
@@ -62,14 +62,14 @@
       return {
         socket: null,
         kingName:localStorage.kingName,
-        angleName:localStorage.angleName,
+        angelName:localStorage.angelName,
         authortaion: {
           token: null
         },
         curObj:'king',
         kingMessage: [],
         kingState:null,
-        angleMessage:[],
+        angelMessage:[],
         angelState:null,
         msg: {
           from: "",
@@ -104,7 +104,7 @@
         let that = this;
         setInterval(function(){
           that.socketSend({type:'ping',username:localStorage.kingUsername});
-          that.socketSend({type:'ping',username:localStorage.angleUsername});
+          that.socketSend({type:'ping',username:localStorage.angelUsername});
           that.socketSend({type:'ping',username:localStorage.myUsername});
         },1000)
       },
@@ -131,15 +131,15 @@
             this.kingMessage.push({ msg: data.message, from: "king"});
           }
           // this.kingMessage.push({ msg: data.message, from: "king" });
-        }else if(data.from==localStorage.angleUsername){
+        }else if(data.from==localStorage.angelUsername){
           
           if(data.send_time){
             let time = new Date(data.send_time*1000);
             let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
             let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
-            this.angleMessage.push({ msg: data.message, from: "angle",time:curDateTime });
+            this.angelMessage.push({ msg: data.message, from: "angel",time:curDateTime });
           }else{
-            this.angleMessage.push({ msg:data.message,from:"angle"})
+            this.angelMessage.push({ msg:data.message,from:"angel"})
           }
         }else if(data.from == localStorage.myUsername && data.to == localStorage.kingUsername){
           if(data.send_time){
@@ -150,23 +150,23 @@
           }else{
             this.kingMessage.push({ msg:data.message,from:"self"})
           }
-        }else if(data.from == localStorage.myUsername && data.to == localStorage.angleUsername){
+        }else if(data.from == localStorage.myUsername && data.to == localStorage.angelUsername){
           if(data.send_time){
             let time = new Date(data.send_time*1000);
             let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
             let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
-            this.angleMessage.push({ msg: data.message, from: "self",time:curDateTime });
+            this.angelMessage.push({ msg: data.message, from: "self",time:curDateTime });
           }else{
-            this.angleMessage.push({ msg:data.message,from:"self"})
+            this.angelMessage.push({ msg:data.message,from:"self"})
           }
         }
         if(data.username==localStorage.kingUsername){
           
           this.kingState = data.online;
-        }else if(data.username==localStorage.angleUsername){
+        }else if(data.username==localStorage.angelUsername){
           this.angelState = data.online;
         }
-        if(localStorage.angleUsername==localStorage.kingUsername){
+        if(localStorage.angelUsername==localStorage.kingUsername){
           this.angelState = this.kingState;
         }
       },
@@ -192,18 +192,18 @@
               this.msg.send_time = Number(0);
               this.kingMessage.push({ msg: this.msg.message, from: "self"});
             }
-          }else if(this.curObj=="angle"){
-            this.msg.to = localStorage.angleUsername;
+          }else if(this.curObj=="angel"){
+            this.msg.to = localStorage.angelUsername;
             let time = new Date();
             if(!this.angelCurTime || time.getTime()-this.angelCurTime.getTime()>60000){
               this.angelCurTime = time;
               let minutes = time.getMinutes()<10?'0'+time.getMinutes():time.getMinutes();
               let curDateTime = (time.getMonth()+1)+'月'+time.getDate()+'日'+time.getHours()+':'+minutes;
               this.msg.send_time = parseInt(time.getTime()/1000)
-              this.angleMessage.push({ msg: this.msg.message, from: "self",time: curDateTime});
+              this.angelMessage.push({ msg: this.msg.message, from: "self",time: curDateTime});
             }else{
               this.msg.send_time = Number(0);
-              this.angleMessage.push({ msg: this.msg.message, from: "self"});
+              this.angelMessage.push({ msg: this.msg.message, from: "self"});
             }
           }
           this.socketSend(this.msg);
@@ -260,7 +260,7 @@
     width: 50%;
     color: grey;
   }
-  .chatAngle{
+  .chatAngel{
     width: 50%;
     color: grey;
   }
@@ -328,13 +328,13 @@
     border-radius: 10px;
     padding: 0 1rem;
   }
-  .triangle {
+  .temp {
     display: inline-block;
     border-left: 10px solid rgb(198, 205, 243);
     border-bottom: 10px solid #32322a03;
     margin-right: 0.2rem;
   }
-  .others .triangle {
+  .others .temp {
     border-left: none;
     border-right: 10px solid rgb(198, 205, 243);
     margin-right: 0;

@@ -96,10 +96,6 @@
     justify-content: center;
   }
 
-  /* .logo img {
-    width: 10rem;
-    margin: 3rem 0 2rem 0;
-  } */
   .loginForm .el-input {
     width: 100%;
     margin: 0.5rem;
@@ -110,7 +106,6 @@
   }
   .el-form-item__error{
       left: 16%;
-      /* transform: translateX(-50%) */
   }
   .start_button {
     width: 8rem;
